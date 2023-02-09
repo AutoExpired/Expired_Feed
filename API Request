@@ -1,0 +1,39 @@
+import requests
+import json
+
+# Set the endpoint and headers
+listings_endpoint = 'https://myplusleads.com/api/listings?status=expired'
+headers = {
+    'Accept': 'application/json',
+    'Authorization': 'Bearer <access_token>'
+}
+
+# Make the GET request to retrieve the expired listings
+response = requests.get(listings_endpoint, headers=headers)
+
+# Check if the request was successful
+if response.status_code == 200:
+    # Parse the JSON response
+    listings = json.loads(response.text)['listings']
+
+    # Loop through each listing and send a postcard from Thanks.IO
+    for listing in listings:
+        postcard_endpoint = 'https://thanks.io/api/postcards'
+        postcard_data = {
+            'to_name': 'John Doe',
+            'to_address': '123 Main St',
+            'to_city': 'Anytown',
+            'to_state': 'CA',
+            'to_zip': '12345',
+            'message': 'Thank you for listing your property with My+ Plus Leads.',
+            'design_id': 123456
+        }
+        postcard_response = requests.post(postcard_endpoint, json=postcard_data)
+
+        # Check if the postcard was sent successfully
+        if postcard_response.status_code == 201:
+            print(f'Postcard sent for listing "{listing["title"]}"')
+        else:
+            print(f'Failed to send postcard for listing "{listing["title"]}"')
+else:
+    print('Failed to retrieve expired listings')
