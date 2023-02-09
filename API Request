@@ -2,7 +2,7 @@ import requests
 import json
 
 # Set the endpoint and headers
-listings_endpoint = 'https://myplusleads.com/api/listings?status=expired'
+listings_endpoint = 'https://myplusleads.com/api/listings?status=expired&timestamp={current_date}'
 headers = {
     'Accept': 'application/json',
     'Authorization': 'Bearer <access_token>'
@@ -15,6 +15,8 @@ response = requests.get(listings_endpoint, headers=headers)
 if response.status_code == 200:
     # Parse the JSON response
     listings = json.loads(response.text)['listings']
+    listingId = json.loads(response.text)['listingId']
+    listingpropertyAddress = json.loads(response.text)['propertyAddress']
 
     # Loop through each listing and send a postcard from Thanks.IO
     for listing in listings:
