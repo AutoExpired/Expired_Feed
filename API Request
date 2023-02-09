@@ -15,12 +15,14 @@ response = requests.get(listings_endpoint, headers=headers)
 if response.status_code == 200:
     # Parse the JSON response
     listings = json.loads(response.text)['listings']
-    listingId = json.loads(response.text)['listingId']
     listingpropertyAddress = json.loads(response.text)['propertyAddress']
 
     # Loop through each listing and send a postcard from Thanks.IO
     for listing in listings:
         postcard_endpoint = 'https://thanks.io/api/postcards'
+        headers = {
+            'Content-Type': 'application/json', 
+            'Authorization': 'Bearer <access_token>',
         postcard_data = {
             'to_name': 'John Doe',
             'to_address': '123 Main St',
